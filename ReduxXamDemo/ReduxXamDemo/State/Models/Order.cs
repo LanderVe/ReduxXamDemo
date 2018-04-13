@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ReduxXamDemo.State.Models
 {
-  class Order
+  public class Order
   {
     public Order(int id, string comments)
     {

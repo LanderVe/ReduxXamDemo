@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ReduxXamDemo.State.Shape
 {
-  class ViewState
+  public class ViewState
   {
     public ViewState(SelectPizzaState selectPizza)
     {
@@ -20,7 +20,7 @@ namespace ReduxXamDemo.State.Shape
   /// <summary>
   /// State associated with Select Pizza View
   /// </summary>
-  class SelectPizzaState
+  public class SelectPizzaState
   {
     public SelectPizzaState(string searchTerm, ImmutableList<int> pizzaIds)
     {

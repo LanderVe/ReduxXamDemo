@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ReduxXamDemo.State.Shape
 {
-  class RouterState
+  public class RouterState
   {
     public RouterState(ImmutableList<RouterStackElement> stack)
     {
@@ -15,7 +15,7 @@ namespace ReduxXamDemo.State.Shape
     public ImmutableList<RouterStackElement> Stack { get; }
   }
 
-  class RouterStackElement
+  public class RouterStackElement
   {
     public RouterStackElement(string viewModelName)
     {

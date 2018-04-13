@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ReduxXamDemo.ViewModels
 {
-    public class MainViewModel : ViewModelBase
+    public class SelectSizeViewModel : ViewModelBase
     {
     }
 }

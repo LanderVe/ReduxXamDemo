@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ReduxXamDemo.Services
 {
-  interface INavigationService
+  public interface INavigationService
   {
   }
 }

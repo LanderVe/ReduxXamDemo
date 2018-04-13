@@ -11,7 +11,7 @@ using Xamarin.Forms.Xaml;
 namespace ObservableBinding
 {
   [ContentProperty("Path")]
-  class BindExtension : IMarkupExtension
+  public class BindExtension : IMarkupExtension
   {
     private IDisposable listenSubscription;
     private IDisposable emitSubscription;

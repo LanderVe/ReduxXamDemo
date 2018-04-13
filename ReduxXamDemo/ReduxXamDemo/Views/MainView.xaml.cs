@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReduxXamDemo.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,9 +8,9 @@ using Xamarin.Forms;
 
 namespace ReduxXamDemo.Views
 {
-	public partial class MainPage : ContentPage
-	{
-		public MainPage()
+	public partial class MainView : ViewPage<MainViewModel>
+  {
+		public MainView()
 		{
 			InitializeComponent();
 		}

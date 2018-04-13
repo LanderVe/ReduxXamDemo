@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ReduxXamDemo.State.Shape
 {
-  class DataState
+  public class DataState
   {
     public DataState(ImmutableSortedDictionary<int, Pizza> pizzas, ImmutableSortedDictionary<int, Size> sizes,
       ImmutableSortedDictionary<int, Topping> toppings, ImmutableSortedDictionary<int, Order> orders,
@@ -28,7 +28,7 @@ namespace ReduxXamDemo.State.Shape
     public Builder ToBuilder() => new Builder(Pizzas, Sizes, Toppings, Orders, OrderDetails);
 
     #region Builder
-    internal class Builder
+    public class Builder
     {
 
       public Builder()

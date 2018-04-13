@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<v:ViewPage xmlns="http://xamarin.com/schemas/2014/forms"
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:v="clr-namespace:ReduxXamDemo.Views"
+            xmlns:vm="clr-namespace:ReduxXamDemo.ViewModels"
+            xmlns:u="clr-namespace:ReduxXamDemo.Utils"
+            xmlns:o="clr-namespace:ObservableBinding;assembly=ObservableBinding"
+            x:TypeArguments="vm:SelectPizzaViewModel"
+            x:Class="ReduxXamDemo.Views.SelectPizzaView">
+
+  <ListView ItemsSource="{o:Bind PizzasStream}">
+    <ListView.ItemTemplate>
+      <DataTemplate>
+        <TextCell Text="{Binding Type}" Detail="{Binding BasePrice}"/>
+      </DataTemplate>
+    </ListView.ItemTemplate>
+    <ListView.Behaviors>
+      <u:ListItemClickedBehavior Command="{Binding SelectPizza}" />
+    </ListView.Behaviors>
+  </ListView>
+
+</v:ViewPage>

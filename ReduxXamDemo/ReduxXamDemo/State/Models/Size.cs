@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ReduxXamDemo.State.Models
 {
-  class Size
+  public class Size
   {
     public Size(int id, string name, decimal priceMultiplier)
     {

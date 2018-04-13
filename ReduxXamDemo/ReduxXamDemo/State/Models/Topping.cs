@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ReduxXamDemo.State.Models
 {
-  class Topping
+  public class Topping
   {
     public Topping(int id, string name, decimal price)
     {

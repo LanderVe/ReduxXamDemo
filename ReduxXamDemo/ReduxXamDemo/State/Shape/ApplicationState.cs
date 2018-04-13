@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ReduxXamDemo.State.Shape
 {
-  class ApplicationState
+  public class ApplicationState
   {
     public ApplicationState(DataState data, UIState ui, ViewState view, RouterState router)
     {

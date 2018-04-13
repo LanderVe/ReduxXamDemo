@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ReduxXamDemo.State.Models
 {
-  class OrderDetail
+  public class OrderDetail
   {
     public OrderDetail(int id, int orderId, int? pizzaId, int? sizeId, ImmutableList<int> toppings)
     {
@@ -34,7 +34,7 @@ namespace ReduxXamDemo.State.Models
 
 
     #region Builder
-    internal class Builder
+    public class Builder
     {
       public Builder()
       {

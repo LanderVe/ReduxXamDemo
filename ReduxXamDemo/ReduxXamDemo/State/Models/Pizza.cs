@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ReduxXamDemo.State.Models
 {
-  class Pizza
+  public class Pizza
   {
     public Pizza(int id, string type, decimal basePrice)
     {

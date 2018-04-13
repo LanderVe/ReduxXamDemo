@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ReduxXamDemo.State.Models
 {
-  class Toast
+  public class Toast
   {
     public Toast(int id, string message)
     {

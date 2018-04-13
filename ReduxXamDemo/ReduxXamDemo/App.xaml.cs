@@ -20,7 +20,7 @@ namespace ReduxXamDemo
     private NavigationService navigationService;
     private Store<ApplicationState> store;
 
-    public IContainer Container { get; private set; }
+    public static IContainer Container { get; private set; }
 
     public App(IModule[] platformSpecificModules)
     {
@@ -28,7 +28,7 @@ namespace ReduxXamDemo
 
       PrepareContainer(platformSpecificModules);
 
-      var nav = new NavigationPage(new MainPage());
+      var nav = new NavigationPage(new MainView());
       MainPage = nav;
 
       //configure navigationService
@@ -49,7 +49,7 @@ namespace ReduxXamDemo
 
       RegisterPlatformSpecificModules(platformSpecificModules, builder);
 
-      var assembly = Assembly.GetExecutingAssembly(typeof(App));
+      var assembly = Assembly.GetExecutingAssembly();
 
       //redux store
       var reducer = new ApplicationReducer();
@@ -57,14 +57,14 @@ namespace ReduxXamDemo
       builder.RegisterInstance(store);
 
       //navigation
-      navigationService = new NavigationService();
+      navigationService = new NavigationService(store);
       builder.RegisterInstance(navigationService).As<INavigationService>();
 
       //services
 
       //register viewmodels
       builder.RegisterAssemblyTypes(assembly)
-             .Where(t => t.Namespace == nameof(ReduxXamDemo.ViewModels))
+             .Where(t => t.Namespace == "ReduxXamDemo.ViewModels")
              .AsSelf()
              .InstancePerDependency();
 

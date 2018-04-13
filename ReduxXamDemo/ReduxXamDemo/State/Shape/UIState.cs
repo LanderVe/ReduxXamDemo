@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ReduxXamDemo.State.Shape
 {
-  class UIState
+  public class UIState
   {
     public UIState(OrderState order, ImmutableList<Toast> toasts)
     {
@@ -21,7 +21,7 @@ namespace ReduxXamDemo.State.Shape
   /// <summary>
   /// state associated with Order process
   /// </summary>
-  class OrderState
+  public class OrderState
   {
     public OrderState(int? currentOrderId, int? currentOrderDetailId)
     {

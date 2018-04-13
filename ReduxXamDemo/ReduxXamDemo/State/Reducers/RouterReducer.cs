@@ -1,4 +1,5 @@
 ﻿using ReduxLib;
+using ReduxXamDemo.State.Actions;
 using ReduxXamDemo.State.Shape;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace ReduxXamDemo.State.Reducers
   class RouterReducer : IReducer<RouterState>
   {
     private static readonly RouterState initialValue = new RouterState(
-      stack: ImmutableList<RouterStackElement>.Empty
+      stack: new List<RouterStackElement> { new RouterStackElement("MainView") }.ToImmutableList()
     );
 
     public RouterState Reduce(RouterState state = null, object action = null)
@@ -22,6 +23,11 @@ namespace ReduxXamDemo.State.Reducers
 
       switch (action)
       {
+        case NavigateToAction a:
+          {
+            return new RouterState(state.Stack.Add(new RouterStackElement(a.ViewModelName)));
+          }
+
         default:
           return state;
       }
