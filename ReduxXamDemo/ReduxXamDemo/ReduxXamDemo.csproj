@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ObservableBinding\ObservableBinding.csproj" />
     <ProjectReference Include="..\..\ReduxLib\ReduxLib.csproj" />
   </ItemGroup>
 </Project>
