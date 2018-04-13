@@ -40,7 +40,19 @@ namespace ReduxXamDemo
 
     private void SetUpToasts(Store<ApplicationState> store)
     {
-      throw new NotImplementedException();
+      var toastService = Container.Resolve<IToastService>();
+
+      store.Select(state => state.UI.Toasts).Subscribe(toasts =>
+      {
+
+        toastService.DismissPermanentNotify();
+
+        var last = toasts.LastOrDefault();
+        if (last != null)
+        {
+          toastService.NotifyPermanent(last.Message);
+        }
+      });
     }
 
     private void PrepareContainer(IModule[] platformSpecificModules)
