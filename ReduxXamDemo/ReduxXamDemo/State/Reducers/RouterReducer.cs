@@ -1,6 +1,7 @@
 ﻿using ReduxLib;
 using ReduxXamDemo.State.Actions;
 using ReduxXamDemo.State.Shape;
+using ReduxXamDemo.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -11,7 +12,7 @@ namespace ReduxXamDemo.State.Reducers
   class RouterReducer : IReducer<RouterState>
   {
     private static readonly RouterState initialValue = new RouterState(
-      stack: new List<RouterStackElement> { new RouterStackElement("MainView") }.ToImmutableList()
+      stack: new List<RouterStackElement> { new RouterStackElement(nameof(MainViewModel)) }.ToImmutableList()
     );
 
     public RouterState Reduce(RouterState state = null, object action = null)
@@ -26,6 +27,16 @@ namespace ReduxXamDemo.State.Reducers
         case NavigateToAction a:
           {
             return new RouterState(state.Stack.Add(new RouterStackElement(a.ViewModelName)));
+          }
+        case PopAction a:
+          {
+            var lastIndex = state.Stack.Count -1;
+            return new RouterState(state.Stack.RemoveAt(lastIndex));
+          }
+        case PopToRootAction a:
+          {
+            var amountToRemove = state.Stack.Count - 1;
+            return new RouterState(state.Stack.RemoveRange(1, amountToRemove));
           }
 
         default:

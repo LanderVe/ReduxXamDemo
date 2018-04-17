@@ -22,6 +22,12 @@ namespace ReduxXamDemo
 
     public static IContainer Container { get; private set; }
 
+    //for previewer only, do not use in production
+    public App()
+    {
+      InitializeComponent();
+    }
+
     public App(IModule[] platformSpecificModules)
     {
       InitializeComponent();
@@ -40,19 +46,19 @@ namespace ReduxXamDemo
 
     private void SetUpToasts(Store<ApplicationState> store)
     {
-      var toastService = Container.Resolve<IToastService>();
+      //var toastService = Container.Resolve<IToastService>();
 
-      store.Select(state => state.UI.Toasts).Subscribe(toasts =>
-      {
+      //store.Select(state => state.UI.Toasts).Subscribe(toasts =>
+      //{
 
-        toastService.DismissPermanentNotify();
+      //  toastService.DismissPermanentNotify();
 
-        var last = toasts.LastOrDefault();
-        if (last != null)
-        {
-          toastService.NotifyPermanent(last.Message);
-        }
-      });
+      //  var last = toasts.LastOrDefault();
+      //  if (last != null)
+      //  {
+      //    toastService.NotifyPermanent(last.Message);
+      //  }
+      //});
     }
 
     private void PrepareContainer(IModule[] platformSpecificModules)
@@ -68,17 +74,19 @@ namespace ReduxXamDemo
       store = new Store<ApplicationState>(reducer);
       builder.RegisterInstance(store);
 
+      //register viewmodels
+      builder.RegisterAssemblyTypes(assembly)
+             .Where(t => t.Namespace == "ReduxXamDemo.ViewModels")
+             .AsSelf()
+             .InstancePerDependency();
+
       //navigation
       navigationService = new NavigationService(store);
       builder.RegisterInstance(navigationService).As<INavigationService>();
 
       //services
 
-      //register viewmodels
-      builder.RegisterAssemblyTypes(assembly)
-             .Where(t => t.Namespace == "ReduxXamDemo.ViewModels")
-             .AsSelf()
-             .InstancePerDependency();
+
 
       ////navigation
       //builder.RegisterInstance(BuildNavigationService()).As<INavigationService>();

@@ -6,8 +6,9 @@
             x:TypeArguments="vm:MainViewModel"
             x:Class="ReduxXamDemo.Views.MainView">
 
-	<Label Text="Welcome to Xamarin.Forms!" 
+    <Button Text="New Order" 
            VerticalOptions="Center" 
-           HorizontalOptions="Center" />
-
+           HorizontalOptions="Center" 
+           Command="{Binding NewOrderCommand}" />
+  
 </v:ViewPage>

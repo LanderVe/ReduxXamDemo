@@ -14,5 +14,9 @@ namespace ReduxXamDemo.State.Actions
     public string ViewModelName { get; }
   }
 
+  class PopAction { }
+  class PopToRootAction { }
+
+
 
 }

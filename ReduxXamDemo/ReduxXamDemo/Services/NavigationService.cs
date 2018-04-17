@@ -1,10 +1,13 @@
 ﻿using ReduxLib;
+using ReduxXamDemo.State.Actions;
 using ReduxXamDemo.State.Shape;
 using ReduxXamDemo.ViewModels;
+using ReduxXamDemo.Views;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -25,15 +28,13 @@ namespace ReduxXamDemo.Services
 
       ConfigurePageMappings();
 
-      store.Select(state => state.Router).Subscribe(OnNewRouterState);
+      store.Select(state => state?.Router).Subscribe(OnNewRouterState);
     }
 
     private void ConfigurePageMappings()
     {
-      string nspace = nameof(ReduxXamDemo.Views);
-
       var q = from t in Assembly.GetExecutingAssembly().GetTypes()
-              where t.IsClass && t.Namespace == nspace
+              where t.IsClass && t.Namespace == "ReduxXamDemo.Views" && t.BaseType.IsConstructedGenericType
               select t;
 
       pageMappings = q.ToDictionary(pageType => pageType.BaseType.GenericTypeArguments[0].Name);
@@ -41,6 +42,8 @@ namespace ReduxXamDemo.Services
 
     private void OnNewRouterState(RouterState routerState)
     {
+      if (navigationPage == null) return;
+
       var current = navigationPage.Navigation.NavigationStack.Select(page => page.GetType()).ToList();
       var desired = routerState.Stack.Select(el => pageMappings[el.ViewModelName]).ToList();
 
@@ -48,7 +51,7 @@ namespace ReduxXamDemo.Services
       if (current.SequenceEqual(desired)) return;
 
 
-      var longestLastIndex = Math.Max(current.Count, desired.Count) - 1;
+      var biggestCount = Math.Max(current.Count, desired.Count);
 
       var pagesToBeRemoved = new List<Page>();
       var pagesToBeAdded = new List<Type>();
@@ -59,7 +62,7 @@ namespace ReduxXamDemo.Services
 
       void FindDifference()
       {
-        for (int i = 0; i < longestLastIndex; i++)
+        for (int i = 0; i < biggestCount; i++)
         {
           var currentPageType = current.ElementAtOrDefault(i);
           var desiredPageType = desired.ElementAtOrDefault(i);
@@ -114,27 +117,34 @@ namespace ReduxXamDemo.Services
 
         //remove
         //remove middle
-        for (int i = 0; i < pagesToBeRemoved.Count - 1; i++)
+        if (pagesToBeRemoved.Count > 0)
         {
-          var pageToRemove = pagesToBeRemoved[i];
-          navigationPage.Navigation.RemovePage(pageToRemove);
+          for (int i = 0; i < pagesToBeRemoved.Count - 1; i++)
+          {
+            var pageToRemove = pagesToBeRemoved[i];
+            navigationPage.Navigation.RemovePage(pageToRemove);
+          }
+          //pop last
+          navigationPage.Navigation.PopAsync();
         }
-        //pop last
-        navigationPage.Navigation.PopAsync();
 
         //add
         //navigate to last page
-        var lastTypeToAdd = pagesToBeAdded[pagesToBeAdded.Count - 1];
-        var lastPageToAdd = (Page)Activator.CreateInstance(lastTypeToAdd);
-        navigationPage.Navigation.PushAsync(lastPageToAdd);
-
-        //insert before
-        for (int i = 0; i < pagesToBeAdded.Count - 1; i++)
+        if (pagesToBeAdded.Count > 0)
         {
-          var typeToAdd = pagesToBeAdded[i];
-          var pageToAdd = (Page)Activator.CreateInstance(typeToAdd);
-          navigationPage.Navigation.InsertPageBefore(pageToAdd, lastPageToAdd);
+          var lastTypeToAdd = pagesToBeAdded[pagesToBeAdded.Count - 1];
+          var lastPageToAdd = (Page)Activator.CreateInstance(lastTypeToAdd);
+          navigationPage.Navigation.PushAsync(lastPageToAdd);
+
+          //insert before
+          for (int i = 0; i < pagesToBeAdded.Count - 1; i++)
+          {
+            var typeToAdd = pagesToBeAdded[i];
+            var pageToAdd = (Page)Activator.CreateInstance(typeToAdd);
+            navigationPage.Navigation.InsertPageBefore(pageToAdd, lastPageToAdd);
+          }
         }
+
 
       }
 
@@ -181,9 +191,9 @@ namespace ReduxXamDemo.Services
       this.navigationPage = navigationPage;
 
       //check when event occurs
-      //navigationPage.Popped += (s,e) => store.Dispatch(TODO);
-      //navigationPage.PoppedToRoot += (s,e) => store.Dispatch(TODO);
-      //navigationPage.Pushed += (s,e) => store.Dispatch(TODO);
+      navigationPage.Popped += (s, e) => store.Dispatch(new PopAction());
+      navigationPage.PoppedToRoot += (s, e) => store.Dispatch(new PopToRootAction());
+      //navigationPage.Pushed += (s, e) => store.Dispatch(TODO);
     }
 
 
