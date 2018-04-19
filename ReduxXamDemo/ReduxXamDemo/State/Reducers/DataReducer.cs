@@ -48,107 +48,23 @@ namespace ReduxXamDemo.State.Reducers
 
       switch (action)
       {
-        case SetPizzaAction a:
-          #region code without builder pattern
-          //var prevOrderDetail = state.OrderDetails[a.OrderDetailId];
-
-          //var newOrderDetail = new OrderDetail(
-          //    a.OrderDetailId,
-          //    prevOrderDetail.OrderId,
-          //    a.PizzaId,
-          //    prevOrderDetail.SizeId,
-          //    prevOrderDetail.ToppingIds
-          //  );
-
-          //var builder = state.OrderDetails.ToBuilder();
-          //builder.Remove(a.OrderDetailId);
-          //builder.Add(a.OrderDetailId, newOrderDetail);
-
-          //return new DataState(
-          //  pizzas: state.Pizzas,
-          //  sizes: state.Sizes,
-          //  toppings: state.Toppings,
-          //  orders: state.Orders,
-          //  orderDetails: builder.ToImmutable()
-          //);
-          #endregion
+        case SaveOrderAction a: //sync save, maybe replace this with a webservice call
           {
-            var prevOrderDetail = state.OrderDetails[a.OrderDetailId];
+            // store order
+            var orderId = state.Orders.Keys.Max() + 1;
+            var newOrder = new Order(orderId, a.CurrentOrder.Order.Comments);
+            var newOrders = state.Orders.Add(orderId, newOrder);
 
-            var newOrderDetail = prevOrderDetail.ToBuilder().WithPizzaId(a.PizzaId).ToImmutable();
+            // store orderdetails
+            var orderDetailId = state.OrderDetails.Keys.Max();
 
-            var orderDetails = state.OrderDetails.Update(a.OrderDetailId, newOrderDetail);
+            var addedOrderDetails = a.CurrentOrder.OrderDetails
+              .Select(orderDetail => orderDetail.ToBuilder().WithId(++orderDetailId).WithOrderId(orderId).ToImmutable())
+              .ToDictionary(od => od.Id);
 
-            return state.ToBuilder().WithOrderDetails(orderDetails).ToImmutable();
-          }
-        case SetSizeAction a:
-          {
-            var prevOrderDetail = state.OrderDetails[a.OrderDetailId];
+            var newOrderDetails = state.OrderDetails.AddRange(addedOrderDetails); //more efficient than adding one by one
 
-            var newOrderDetail = prevOrderDetail.ToBuilder().WithSizeId(a.SizeId).ToImmutable();
-
-            var orderDetails = state.OrderDetails.Update(a.OrderDetailId, newOrderDetail);
-
-            return state.ToBuilder().WithOrderDetails(orderDetails).ToImmutable();
-          }
-        case AddToppingAction a:
-          {
-            var prevOrderDetail = state.OrderDetails[a.OrderDetailId];
-
-            var newToppings = prevOrderDetail.ToppingIds.Add(a.ToppingId);
-
-            var newOrderDetail = prevOrderDetail.ToBuilder().WithToppingIds(newToppings).ToImmutable();
-
-            var orderDetails = state.OrderDetails.Update(a.OrderDetailId, newOrderDetail);
-
-            return state.ToBuilder().WithOrderDetails(orderDetails).ToImmutable();
-          }
-        case RemoveToppingAction a:
-          {
-            var prevOrderDetail = state.OrderDetails[a.OrderDetailId];
-
-            if (prevOrderDetail.ToppingIds.Contains(a.ToppingId))
-            {
-              var newToppings = prevOrderDetail.ToppingIds.Remove(a.ToppingId);
-
-              var newOrderDetail = prevOrderDetail.ToBuilder().WithToppingIds(newToppings).ToImmutable();
-
-              var orderDetails = state.OrderDetails.Update(a.OrderDetailId, newOrderDetail);
-
-              return state.ToBuilder().WithOrderDetails(orderDetails).ToImmutable();
-            }
-            else
-            {
-              return state; //return same object when nothing has changed
-            }
-          }
-        case CreateOrderDetailAction a:
-          {
-            var orderDetail = new OrderDetail.Builder().WithOrderId(a.OrderId).ToImmutable();
-            var orderDetailId = state.OrderDetails.Keys.Max() + 1;
-
-            var orderDetails = state.OrderDetails.Add(orderDetailId, orderDetail);
-
-            return state.ToBuilder().WithOrderDetails(orderDetails).ToImmutable();
-          }
-        case RemoveOrderDetailAction a:
-          {
-            if (state.OrderDetails.ContainsKey(a.OrderDetailId))
-            {
-              var orderDetails = state.OrderDetails.Remove(a.OrderDetailId);
-
-              return state.ToBuilder().WithOrderDetails(orderDetails).ToImmutable();
-            }
-
-            return state; //return same object when nothing has changed
-          }
-        case SetCommentsAction a:
-          {
-            var oldOrder = state.Orders[a.OrderId];
-            var newOrder = new Order(a.OrderId, a.Comments);
-            var orders = state.Orders.Update(a.OrderId, newOrder);
-
-            return state.ToBuilder().WithOrders(orders).ToImmutable();
+            return state.ToBuilder().WithOrders(newOrders).WithOrderDetails(newOrderDetails).ToImmutable();
           }
         default:
           return state;

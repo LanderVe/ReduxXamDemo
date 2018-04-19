@@ -22,12 +22,6 @@ namespace ReduxXamDemo
 
     public static IContainer Container { get; private set; }
 
-    //for previewer only, do not use in production
-    public App()
-    {
-      InitializeComponent();
-    }
-
     public App(IModule[] platformSpecificModules)
     {
       InitializeComponent();

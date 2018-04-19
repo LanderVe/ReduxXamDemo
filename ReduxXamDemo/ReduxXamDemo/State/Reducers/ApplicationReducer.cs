@@ -9,6 +9,7 @@ namespace ReduxXamDemo.State.Reducers
   class ApplicationReducer : IReducer<ApplicationState>
   {
     private DataReducer dataReducer = new DataReducer();
+    private OrderReducer orderReducer = new OrderReducer();
     private UIReducer uiReducer = new UIReducer();
     private ViewReducer viewReducer = new ViewReducer();
     private RouterReducer routerReducer = new RouterReducer();
@@ -17,6 +18,7 @@ namespace ReduxXamDemo.State.Reducers
     {
       var newState = new ApplicationState(
         data: dataReducer.Reduce(state?.Data, action),
+        currentOrder: orderReducer.Reduce(state?.CurrentOrder, action),
         ui: uiReducer.Reduce(state?.UI, action),
         view: viewReducer.Reduce(state?.View, action),
         router: routerReducer.Reduce(state?.Router, action)
@@ -24,6 +26,7 @@ namespace ReduxXamDemo.State.Reducers
 
       var hasChanged = state == null
                        || state.Data != newState.Data
+                       || state.CurrentOrder != newState.CurrentOrder
                        || state.UI != newState.UI
                        || state.View != newState.View
                        || state.Router != newState.Router;

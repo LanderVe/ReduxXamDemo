@@ -11,48 +11,65 @@ using System.Collections.Immutable;
 using System.Text;
 using Xamarin.Forms;
 using ReduxXamDemo.State.Actions;
+using System.Reactive.Subjects;
+using ReduxXamDemo.Utils;
+using System.Diagnostics;
 
 namespace ReduxXamDemo.ViewModels
 {
   public class SelectPizzaViewModel : ViewModelBase
   {
     private readonly Store<ApplicationState> store;
-    private IDisposable subscription;
-    public int? currentOrderDetailId;
+    private List<IDisposable> subscriptions = new List<IDisposable>();
 
     public Command SelectPizza { get; }
-    public IObservable<IOrderedEnumerable<Pizza>> PizzasStream { get; }
+    public IObservable<ImmutableList<Pizza>> PizzasStream { get; }
+    public Subject<string> SearchTerm { get; } = new Subject<string>();
 
     public SelectPizzaViewModel(Store<ApplicationState> store)
     {
       this.store = store;
 
       //bindable observables
-      PizzasStream = store.Select(state => state.Data.Pizzas.Values.OrderBy(s => s.BasePrice));
+      var allPizzaStream = store.Select(state => state.Data.Pizzas.Values.OrderBy(s => s.BasePrice));
 
+      var searchStream = store.Select(state => state.View.SelectPizza);
+
+      PizzasStream = allPizzaStream.CombineLatest(searchStream, GetFilteredPizzas);
       //commands
       SelectPizza = new Command<Pizza>(OnSelectPizza);
+    }
+
+    private ImmutableList<Pizza> GetFilteredPizzas(IOrderedEnumerable<Pizza> allPizzas, SelectPizzaState searchState)
+    {
+      if (String.IsNullOrEmpty(searchState.SearchTerm))
+        return allPizzas.ToImmutableList();
+      else
+        return allPizzas.Where(p => p.Type.ToLower().Contains(searchState.SearchTerm.ToLower())).ToImmutableList();
     }
 
     public override void OnLoaded()
     {
       //subscriptions
-      subscription = store.Select(state => state.UI.Order.CurrentOrderDetailId)
-        .Subscribe(cid => currentOrderDetailId = cid);
+      store.Select(state => state.View.SelectPizza.SearchTerm)
+        .Subscribe(SearchTerm, subscriptions);
+
+      //dispatches new search when term value has been changed
+      SearchTerm.Subscribe(term => store.Dispatch(new SearchPizzasAction(term)), subscriptions);
     }
 
     public override void OnUnloaded()
     {
-      subscription.Dispose();
+      foreach (var subscription in subscriptions)
+      {
+        subscription.Dispose();
+      }
     }
 
     private void OnSelectPizza(Pizza selectedPizza)
     {
-      if (currentOrderDetailId != null)
-      {
-        store.Dispatch(new SetPizzaAction(currentOrderDetailId.Value, selectedPizza.Id));
-        store.Dispatch(new NavigateToAction(nameof(SelectSizeViewModel)));
-      }
+      store.Dispatch(new SetPizzaAction(selectedPizza.Id));
+      store.Dispatch(new NavigateToAction(nameof(SelectSizeViewModel)));
     }
 
   }

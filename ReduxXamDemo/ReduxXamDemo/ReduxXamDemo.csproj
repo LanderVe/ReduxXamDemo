@@ -17,6 +17,9 @@
     <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\SelectSizeView.xaml.cs">
+      <DependentUpon>SelectSizeView.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

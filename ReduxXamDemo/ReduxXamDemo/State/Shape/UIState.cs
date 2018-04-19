@@ -8,28 +8,26 @@ namespace ReduxXamDemo.State.Shape
 {
   public class UIState
   {
-    public UIState(OrderState order, ImmutableList<Toast> toasts)
+    public UIState(ImmutableList<Toast> toasts)
     {
-      Order = order;
       Toasts = toasts;
     }
 
-    public OrderState Order { get; }
     public ImmutableList<Toast> Toasts { get; }
   }
 
-  /// <summary>
-  /// state associated with Order process
-  /// </summary>
-  public class OrderState
-  {
-    public OrderState(int? currentOrderId, int? currentOrderDetailId)
-    {
-      CurrentOrderId = currentOrderId;
-      CurrentOrderDetailId = currentOrderDetailId;
-    }
+  ///// <summary>
+  ///// state associated with Order process
+  ///// </summary>
+  //public class OrderState
+  //{
+  //  public OrderState(int? currentOrderId, int? currentOrderDetailId)
+  //  {
+  //    CurrentOrderId = currentOrderId;
+  //    CurrentOrderDetailId = currentOrderDetailId;
+  //  }
 
-    public int? CurrentOrderId { get; }
-    public int? CurrentOrderDetailId { get; }
-  }
+  //  public int? CurrentOrderId { get; }
+  //  public int? CurrentOrderDetailId { get; }
+  //}
 }

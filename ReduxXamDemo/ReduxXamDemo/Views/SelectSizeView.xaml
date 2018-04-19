@@ -5,22 +5,20 @@
             xmlns:vm="clr-namespace:ReduxXamDemo.ViewModels"
             xmlns:u="clr-namespace:ReduxXamDemo.Utils"
             xmlns:o="clr-namespace:ObservableBinding;assembly=ObservableBinding"
-            x:TypeArguments="vm:SelectPizzaViewModel"
-            x:Class="ReduxXamDemo.Views.SelectPizzaView"
-            Title="Pizzas">
+            x:TypeArguments="vm:SelectSizeViewModel"
+            x:Class="ReduxXamDemo.Views.SelectSizeView"
+            Title="Sizes">
 
   <StackLayout>
 
-    <SearchBar Text="{o:Bind SearchTerm, Mode=TwoWay}"/>
-
-    <ListView ItemsSource="{o:Bind PizzasStream, Mode=OneWay}">
+    <ListView ItemsSource="{o:Bind SizesStream, Mode=OneWay}">
       <ListView.ItemTemplate>
         <DataTemplate>
-          <TextCell Text="{Binding Type}" Detail="{Binding BasePrice}"/>
+          <TextCell Text="{Binding Name}" Detail="{Binding FormattedPrice}"/>
         </DataTemplate>
       </ListView.ItemTemplate>
       <ListView.Behaviors>
-        <u:ListItemClickedBehavior Command="{Binding SelectPizza}" />
+        <u:ListItemClickedBehavior Command="{Binding SelectSize}" />
       </ListView.Behaviors>
     </ListView>
 

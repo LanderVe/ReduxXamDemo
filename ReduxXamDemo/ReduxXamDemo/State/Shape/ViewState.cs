@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReduxXamDemo.State.Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Text;
@@ -15,22 +16,18 @@ namespace ReduxXamDemo.State.Shape
     public SelectPizzaState SelectPizza { get; }
   }
 
-
-
   /// <summary>
   /// State associated with Select Pizza View
   /// </summary>
   public class SelectPizzaState
   {
-    public SelectPizzaState(string searchTerm, ImmutableList<int> pizzaIds)
+    public SelectPizzaState(string searchTerm)
     {
       SearchTerm = searchTerm;
-      PizzaIds = pizzaIds;
     }
 
     public string SearchTerm { get; }
-    public ImmutableList<int> PizzaIds { get; }
   }
 
-  
+
 }

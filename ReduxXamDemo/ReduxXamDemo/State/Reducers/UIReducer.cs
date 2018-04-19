@@ -11,7 +11,6 @@ namespace ReduxXamDemo.State.Reducers
   class UIReducer : IReducer<UIState>
   {
     private static readonly UIState initialValue = new UIState(
-      order: new OrderState(null, null),
       toasts: ImmutableList<Toast>.Empty
     );
 
@@ -30,14 +29,12 @@ namespace ReduxXamDemo.State.Reducers
           if (state.Toasts.Contains(NO_INTERNET_TOAST))
           {
             return new UIState(
-              order: state.Order,
               toasts: state.Toasts.MoveItemAtIndexToFront(NO_INTERNET_TOAST)
             );
           }
           else
           {
             return new UIState(
-              order: state.Order,
               toasts: state.Toasts.Insert(0, NO_INTERNET_TOAST)
             );
           }
@@ -45,7 +42,6 @@ namespace ReduxXamDemo.State.Reducers
           if (state.Toasts.Contains(NO_INTERNET_TOAST))
           {
             return new UIState(
-              order: state.Order,
               toasts: state.Toasts.Remove(NO_INTERNET_TOAST)
             );
           }

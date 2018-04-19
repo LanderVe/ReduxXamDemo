@@ -7,83 +7,65 @@ namespace ReduxXamDemo.State.Actions
 {
   class CreateOrderAction { }
 
-  class CreateOrderDetailAction
-  {
-    public CreateOrderDetailAction(int orderId)
-    {
-      OrderId = orderId;
-    }
-
-    public int OrderId { get; }
-  }
+  class CreateOrderDetailAction { }
 
   class RemoveOrderDetailAction
   {
-    public RemoveOrderDetailAction(int orderDetailId)
+    public RemoveOrderDetailAction(int index)
     {
-      OrderDetailId = orderDetailId;
+      Index = index;
     }
 
-    public int OrderDetailId { get; }
+    public int Index { get; }
   }
 
   class SetPizzaAction
   {
-    public SetPizzaAction(int orderDetailId, int pizzaId)
+    public SetPizzaAction(int pizzaId)
     {
-      OrderDetailId = orderDetailId;
       PizzaId = pizzaId;
     }
 
-    public int OrderDetailId { get; }
     public int PizzaId { get; }
   }
 
   class SetSizeAction
   {
-    public SetSizeAction(int orderDetailId, int sizeId)
+    public SetSizeAction(int sizeId)
     {
-      OrderDetailId = orderDetailId;
       SizeId = sizeId;
     }
 
-    public int OrderDetailId { get; }
     public int SizeId { get; }
   }
 
   class AddToppingAction
   {
-    public AddToppingAction(int orderDetailId, int toppingId)
+    public AddToppingAction(int toppingId)
     {
-      OrderDetailId = orderDetailId;
       ToppingId = toppingId;
     }
 
-    public int OrderDetailId { get; }
     public int ToppingId { get; }
   }
 
   class RemoveToppingAction
   {
-    public RemoveToppingAction(int orderDetailId, int toppingId)
+    public RemoveToppingAction(int toppingId)
     {
-      OrderDetailId = orderDetailId;
       ToppingId = toppingId;
     }
 
-    public int OrderDetailId { get; }
     public int ToppingId { get; }
   }
 
   class SetCommentsAction
   {
-    public SetCommentsAction(int orderId, string comments)
+    public SetCommentsAction(string comments)
     {
-      OrderId = orderId;
       Comments = comments;
     }
 
-    public int OrderId { get; }
     public string Comments { get; }
   }
 

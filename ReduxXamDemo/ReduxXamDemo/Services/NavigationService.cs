@@ -148,40 +148,6 @@ namespace ReduxXamDemo.Services
 
       }
 
-
-      //void NavigateLast()
-      //{
-      //  //check last
-      //  var lastCurrentPageType = current.ElementAtOrDefault(longestLastIndex);
-      //  var lastDesiredPageType = desired.ElementAtOrDefault(longestLastIndex);
-
-      //  //if same return
-      //  if (lastCurrentPageType == lastDesiredPageType) return;
-
-      //  //navigate forward
-      //  else if (lastCurrentPageType == null)
-      //  {
-      //    var lastDesiredPage = (Page)Activator.CreateInstance(lastDesiredPageType);
-      //    navigationPage.Navigation.PushAsync(lastDesiredPage);
-      //  }
-
-      //  //navigate backwards
-      //  else if (lastDesiredPageType == null)
-      //  {
-      //    navigationPage.Navigation.PopAsync();
-      //  }
-
-      //  //replace last page
-      //  else
-      //  {
-      //    var lastCurrentPage = navigationPage.Navigation.NavigationStack[navigationPage.Navigation.NavigationStack.Count - 1];
-      //    var lastDesiredPage = (Page)Activator.CreateInstance(lastDesiredPageType);
-
-      //    navigationPage.Navigation.PushAsync(lastDesiredPage); //push new
-      //    navigationPage.Navigation.RemovePage(lastCurrentPage); //remove old
-      //  }
-      //}
-
     }
 
 

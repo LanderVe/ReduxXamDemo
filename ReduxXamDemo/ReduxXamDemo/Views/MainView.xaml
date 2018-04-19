@@ -3,12 +3,23 @@
             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
             xmlns:v="clr-namespace:ReduxXamDemo.Views"
             xmlns:vm="clr-namespace:ReduxXamDemo.ViewModels"
+            xmlns:o="clr-namespace:ObservableBinding;assembly=ObservableBinding"
             x:TypeArguments="vm:MainViewModel"
-            x:Class="ReduxXamDemo.Views.MainView">
+            x:Class="ReduxXamDemo.Views.MainView"
+            Title="Orders">
 
-    <Button Text="New Order" 
+  <StackLayout>
+
+    <Button Text="Add Pizza" 
            VerticalOptions="Center" 
            HorizontalOptions="Center" 
-           Command="{Binding NewOrderCommand}" />
-  
+           Command="{Binding NewOrderDetailCommand}" />
+
+    <Button Text="Order" 
+           VerticalOptions="Center" 
+           HorizontalOptions="Center" 
+           IsVisible="{o:Bind IsOrderButtonVisible}"
+           Command="{Binding OrderCommand}" />
+    
+  </StackLayout>
 </v:ViewPage>

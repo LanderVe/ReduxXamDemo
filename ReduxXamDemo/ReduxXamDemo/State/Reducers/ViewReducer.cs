@@ -1,4 +1,6 @@
 ﻿using ReduxLib;
+using ReduxXamDemo.State.Actions;
+using ReduxXamDemo.State.Models;
 using ReduxXamDemo.State.Shape;
 using System;
 using System.Collections.Generic;
@@ -9,10 +11,9 @@ namespace ReduxXamDemo.State.Reducers
 {
   class ViewReducer : IReducer<ViewState>
   {
-    private static readonly ViewState initialValue = new ViewState (
+    private static readonly ViewState initialValue = new ViewState(
         selectPizza: new SelectPizzaState(
-          searchTerm: null,
-          pizzaIds: ImmutableList<int>.Empty
+          searchTerm: null
         )
       );
 
@@ -25,6 +26,14 @@ namespace ReduxXamDemo.State.Reducers
 
       switch (action)
       {
+        case SearchPizzasAction a:
+          {
+            if (state.SelectPizza.SearchTerm != a.SearchTerm)
+              return new ViewState(new SelectPizzaState(a.SearchTerm));
+            else
+              return state;
+          }
+
         default:
           return state;
       }
