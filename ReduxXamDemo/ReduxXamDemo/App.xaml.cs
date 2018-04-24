@@ -78,20 +78,6 @@ namespace ReduxXamDemo
       navigationService = new NavigationService(store);
       builder.RegisterInstance(navigationService).As<INavigationService>();
 
-      //services
-
-
-
-      ////navigation
-      //builder.RegisterInstance(BuildNavigationService()).As<INavigationService>();
-
-      ////services
-      //builder.RegisterType<RecipeSettings>().As<IRecipeSettings>().SingleInstance();
-
-      ////viewmodels
-      //builder.RegisterType<LoginViewModel>().InstancePerDependency();
-
-
       Container = builder.Build();
     }
 

@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<v:ViewPage xmlns="http://xamarin.com/schemas/2014/forms"
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:v="clr-namespace:ReduxXamDemo.Views"
+            xmlns:vm="clr-namespace:ReduxXamDemo.ViewModels"
+            xmlns:u="clr-namespace:ReduxXamDemo.Utils"
+            xmlns:o="clr-namespace:ObservableBinding;assembly=ObservableBinding"
+            x:TypeArguments="vm:SelectToppingsViewModel"
+            x:Class="ReduxXamDemo.Views.SelectToppingsView"
+            Title="Toppings">
+
+  <ContentPage.ToolbarItems>
+    <ToolbarItem Command="{Binding FinishCommand}" Order="Primary" Text="Done" Priority="0" />
+  </ContentPage.ToolbarItems>
+
+
+  <ListView ItemsSource="{o:Bind ToppingsStream, Mode=OneWay}">
+    <ListView.ItemTemplate>
+      <DataTemplate>
+        <SwitchCell Text="{Binding Description}" On="{Binding IsSelected}"/>
+      </DataTemplate>
+    </ListView.ItemTemplate>
+  </ListView>
+
+</v:ViewPage>

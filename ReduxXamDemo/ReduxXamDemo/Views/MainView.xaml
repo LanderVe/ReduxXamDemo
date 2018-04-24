@@ -6,6 +6,7 @@
             xmlns:o="clr-namespace:ObservableBinding;assembly=ObservableBinding"
             x:TypeArguments="vm:MainViewModel"
             x:Class="ReduxXamDemo.Views.MainView"
+            x:Name="mainView"
             Title="Orders">
 
   <StackLayout>
@@ -15,11 +16,40 @@
            HorizontalOptions="Center" 
            Command="{Binding NewOrderDetailCommand}" />
 
-    <Button Text="Order" 
-           VerticalOptions="Center" 
-           HorizontalOptions="Center" 
-           IsVisible="{o:Bind IsOrderButtonVisible}"
-           Command="{Binding OrderCommand}" />
-    
+    <ListView ItemsSource="{o:Bind OrderDetailsStream, Mode=OneWay}">
+      <ListView.ItemTemplate>
+        <DataTemplate>
+          <!--<TextCell Text="{Binding Description}" 
+                    Detail="{Binding Price, StringFormat='{0:C}'}">
+            <TextCell.ContextActions>
+              <MenuItem Text="Delete" Command="{Binding BindingContext.DeleteOrderDetailCommand, Source={x:Reference mainView}}" CommandParameter="{Binding}"></MenuItem>
+            </TextCell.ContextActions>
+          </TextCell>-->
+          <ViewCell>
+            <ViewCell.View>
+              <StackLayout Orientation="Horizontal">
+                <Label Text="{Binding Description}"/>
+                <Label Text="{Binding Price, StringFormat='{0:C}'}"/>
+                <Button Text="Del" Command="{Binding BindingContext.DeleteOrderDetailCommand, Source={x:Reference mainView}}" CommandParameter="{Binding}"/>
+              </StackLayout>
+            </ViewCell.View>
+          </ViewCell>
+        </DataTemplate>
+      </ListView.ItemTemplate>
+      <ListView.Footer>
+
+        <StackLayout IsVisible="{o:Bind IsOrderReady}">
+          <Label Text="{o:Bind TotalPriceStream}" HorizontalOptions="End" Margin="0,0,20,0"/>
+          <Button Text="Order" 
+                  VerticalOptions="Center" 
+                  HorizontalOptions="Center" 
+                  Command="{Binding OrderCommand}" />
+        </StackLayout>
+        
+      </ListView.Footer>
+    </ListView>
+
+
+
   </StackLayout>
 </v:ViewPage>

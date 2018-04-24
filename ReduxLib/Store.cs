@@ -40,15 +40,20 @@ namespace ReduxLib
       .Replay(1);
     }
 
-    public IObservable<TSlice> Select<TSlice>(Func<TApplicationState, TSlice> selector)
+    /// <summary>
+    /// Grabs the slice of the slice of the state, you are interessted in.
+    /// To use this efficently, only retrieve data, don't apply logic. 
+    /// The selector is executed with any change within the state, so it must be light
+    /// Good: <code> state => state.This.That </code>
+    /// Bad: <code> state => state.This.Where(t => CalculateStuff(T) > 0) </code>
+    /// </summary>
+    /// <typeparam name="TSlice"></typeparam>
+    /// <param name="selector"></param>
+    /// <returns></returns>
+    public IObservable<TSlice> Grab<TSlice>(Func<TApplicationState, TSlice> selector)
     {
       return storeStateStream.Select(state => selector(state)).DistinctUntilChanged();
     }
-
-    //public IObservable<TApplicationState> GetState()
-    //{
-    //  return storeStateStream.DistinctUntilChanged();
-    //}
 
   }
 }

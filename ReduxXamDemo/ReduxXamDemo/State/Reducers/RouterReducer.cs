@@ -28,6 +28,12 @@ namespace ReduxXamDemo.State.Reducers
           {
             return new RouterState(state.Stack.Add(new RouterStackElement(a.ViewModelName)));
           }
+        case NavigateBackToAction a:
+          {
+            var startIndexToRemove = state.Stack.FindLastIndex(rse => rse.ViewModelName == a.ViewModelName) + 1;
+            var newStack = state.Stack.RemoveRange(startIndexToRemove, state.Stack.Count - startIndexToRemove);
+            return new RouterState(newStack);
+          }
         case PopAction a:
           {
             var lastIndex = state.Stack.Count -1;

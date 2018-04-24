@@ -31,16 +31,17 @@ namespace ReduxXamDemo.ViewModels
       this.store = store;
 
       //bindable observables
-      var allPizzaStream = store.Select(state => state.Data.Pizzas.Values.OrderBy(s => s.BasePrice));
+      var allPizzaStream = store.Grab(state => state.Data.Pizzas).Select(p => p.Values.OrderBy(s => s.BasePrice).ToList());
 
-      var searchStream = store.Select(state => state.View.SelectPizza);
+      var searchStream = store.Grab(state => state.View.SelectPizza);
 
       PizzasStream = allPizzaStream.CombineLatest(searchStream, GetFilteredPizzas);
+
       //commands
       SelectPizza = new Command<Pizza>(OnSelectPizza);
     }
 
-    private ImmutableList<Pizza> GetFilteredPizzas(IOrderedEnumerable<Pizza> allPizzas, SelectPizzaState searchState)
+    private ImmutableList<Pizza> GetFilteredPizzas(List<Pizza> allPizzas, SelectPizzaState searchState)
     {
       if (String.IsNullOrEmpty(searchState.SearchTerm))
         return allPizzas.ToImmutableList();
@@ -51,7 +52,7 @@ namespace ReduxXamDemo.ViewModels
     public override void OnLoaded()
     {
       //subscriptions
-      store.Select(state => state.View.SelectPizza.SearchTerm)
+      store.Grab(state => state.View.SelectPizza.SearchTerm)
         .Subscribe(SearchTerm, subscriptions);
 
       //dispatches new search when term value has been changed

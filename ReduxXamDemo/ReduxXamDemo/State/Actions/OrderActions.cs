@@ -1,6 +1,7 @@
 ﻿using ReduxXamDemo.State.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Text;
 
 namespace ReduxXamDemo.State.Actions
@@ -37,6 +38,16 @@ namespace ReduxXamDemo.State.Actions
     }
 
     public int SizeId { get; }
+  }
+
+  class SetToppingsAction
+  {
+    public SetToppingsAction(ImmutableList<int> toppingIds)
+    {
+      ToppingIds = toppingIds;
+    }
+
+    public ImmutableList<int> ToppingIds { get;}
   }
 
   class AddToppingAction

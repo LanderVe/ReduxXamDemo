@@ -52,6 +52,19 @@ namespace ReduxXamDemo.State.Reducers
 
             return new CurrentOrderState(state.Order, newOrderDetails, state.CurrentOrderDetailId);
           }
+        case SetToppingsAction a:
+          {
+            var prevOrderDetail = state.OrderDetails[state.CurrentOrderDetailId];
+
+            var newOrderDetail = prevOrderDetail
+              .ToBuilder()
+              .WithToppingIds(a.ToppingIds)
+              .ToImmutable();
+
+            var newOrderDetails = state.OrderDetails.Replace(prevOrderDetail, newOrderDetail);
+
+            return new CurrentOrderState(state.Order, newOrderDetails, state.CurrentOrderDetailId);
+          }
         case AddToppingAction a:
           {
             var prevOrderDetail = state.OrderDetails[state.CurrentOrderDetailId];

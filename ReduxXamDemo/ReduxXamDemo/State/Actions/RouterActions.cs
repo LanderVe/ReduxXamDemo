@@ -14,6 +14,16 @@ namespace ReduxXamDemo.State.Actions
     public string ViewModelName { get; }
   }
 
+  class NavigateBackToAction
+  {
+    public NavigateBackToAction(string viewModelName)
+    {
+      ViewModelName = viewModelName;
+    }
+
+    public string ViewModelName { get; }
+  }
+
   class PopAction { }
   class PopToRootAction { }
 

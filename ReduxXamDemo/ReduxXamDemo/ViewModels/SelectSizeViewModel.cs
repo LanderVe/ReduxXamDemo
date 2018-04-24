@@ -25,11 +25,11 @@ namespace ReduxXamDemo.ViewModels
       this.store = store;
 
       //bindable observables
-      var pizzas = store.Select(state => state.Data.Pizzas);
+      var pizzas = store.Grab(state => state.Data.Pizzas);
 
-      var sizes = store.Select(state => state.Data.Sizes);
+      var sizes = store.Grab(state => state.Data.Sizes);
 
-      var selectedPizzaId = store.Select(state => state.CurrentOrder)
+      var selectedPizzaId = store.Grab(state => state.CurrentOrder)
         .Select(co => co.OrderDetails[co.CurrentOrderDetailId].PizzaId).Where(pid => pid.HasValue);
 
       var selectedPizza = pizzas.CombineLatest(selectedPizzaId, (p, id) => p[id.Value]);
@@ -37,7 +37,7 @@ namespace ReduxXamDemo.ViewModels
       SizesStream = sizes.CombineLatest(selectedPizza, (s, p) => MapSizeToViewModel(s, p));
 
       //commands
-      SelectSize = new XF.Command<Size>(OnSelectSize);
+      SelectSize = new XF.Command<SizeOptionViewModel>(OnSelectSize);
     }
 
     private IEnumerable<SizeOptionViewModel> MapSizeToViewModel(ImmutableSortedDictionary<int, Size> sizes, Pizza selectedPizza)
@@ -51,10 +51,10 @@ namespace ReduxXamDemo.ViewModels
           });
     }
 
-    private void OnSelectSize(Size selectedSize)
+    private void OnSelectSize(SizeOptionViewModel selectedSize)
     {
       store.Dispatch(new SetSizeAction(selectedSize.Id));
-      //store.Dispatch(new NavigateToAction(nameof(SelectToppingsViewModel)));
+      store.Dispatch(new NavigateToAction(nameof(SelectToppingsViewModel)));
     }
   }
 

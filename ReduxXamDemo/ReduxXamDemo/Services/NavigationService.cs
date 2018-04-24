@@ -28,7 +28,7 @@ namespace ReduxXamDemo.Services
 
       ConfigurePageMappings();
 
-      store.Select(state => state?.Router).Subscribe(OnNewRouterState);
+      store.Grab(state => state?.Router).Subscribe(OnNewRouterState);
     }
 
     private void ConfigurePageMappings()

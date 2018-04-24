@@ -11,6 +11,8 @@ using ReduxXamDemo.Services;
 using ReduxXamDemo.Droid.Services;
 using Autofac;
 using Autofac.Core;
+using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace ReduxXamDemo.Droid
 {
@@ -25,8 +27,37 @@ namespace ReduxXamDemo.Droid
       base.OnCreate(bundle);
 
       global::Xamarin.Forms.Forms.Init(this, bundle);
+#if DEBUG
+      TaskScheduler.UnobservedTaskException += TaskSchedulerOnUnobservedTaskException;
+      AndroidEnvironment.UnhandledExceptionRaiser += AndroidEnvironmentOnUnhandledException;
+      AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+#endif
+
       LoadApplication(new App(new IModule[] { new AndroidDIModule(this) }));
     }
+
+#if DEBUG
+    private void AndroidEnvironmentOnUnhandledException(object sender, RaiseThrowableEventArgs e)
+    {
+      System.Diagnostics.Debug.WriteLine($"Unhandled Exception: {e.Exception.Message}");
+      if (Debugger.IsAttached)
+        Debugger.Break();
+    }
+
+    private void TaskSchedulerOnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+    {
+      System.Diagnostics.Debug.WriteLine($"Unhandled Exception: {e.Exception.Message}");
+      if (Debugger.IsAttached)
+        Debugger.Break();
+    }
+
+    private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+    {
+      System.Diagnostics.Debug.WriteLine($"Unhandled Exception: {e.ExceptionObject}");
+      if (Debugger.IsAttached)
+        Debugger.Break();
+    }
+#endif
   }
 
   class AndroidDIModule : Module
