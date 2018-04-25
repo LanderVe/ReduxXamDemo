@@ -12,6 +12,10 @@ using ReduxXamDemo.State.Shape;
 using ReduxLib;
 using ReduxXamDemo.State.Reducers;
 using ReduxXamDemo.Services;
+using Plugin.Connectivity;
+using System.Reactive.Linq;
+using Plugin.Connectivity.Abstractions;
+using ReduxXamDemo.State.Actions;
 
 namespace ReduxXamDemo
 {
@@ -36,24 +40,43 @@ namespace ReduxXamDemo
 
       //get store, setup toasts
       SetUpToasts(store);
+      CheckConnectivity(store);
     }
 
     private void SetUpToasts(Store<ApplicationState> store)
     {
-      //var toastService = Container.Resolve<IToastService>();
+      var toastService = Container.Resolve<IToastService>();
 
-      //store.Select(state => state.UI.Toasts).Subscribe(toasts =>
-      //{
+      store.Grab(state => state.UI.Toasts).Subscribe(toasts =>
+      {
 
-      //  toastService.DismissPermanentNotify();
+        toastService.DismissPermanentNotify();
 
-      //  var last = toasts.LastOrDefault();
-      //  if (last != null)
-      //  {
-      //    toastService.NotifyPermanent(last.Message);
-      //  }
-      //});
+        var last = toasts.LastOrDefault();
+        if (last != null)
+        {
+          toastService.NotifyPermanent(last.Message);
+        }
+      });
     }
+
+    private void CheckConnectivity(Store<ApplicationState> store)
+    {
+      if (!CrossConnectivity.Current.IsConnected)
+      {
+        store.Dispatch(new LostInternetAction());
+      }
+
+      CrossConnectivity.Current.ConnectivityChanged += (s, e) =>
+      {
+        if (CrossConnectivity.Current.IsConnected)
+          store.Dispatch(new GotInternetAction());
+        else
+          store.Dispatch(new LostInternetAction());
+      };
+    }
+
+    #region Dependency Injection
 
     private void PrepareContainer(IModule[] platformSpecificModules)
     {
@@ -88,6 +111,8 @@ namespace ReduxXamDemo
         containerBuilder.RegisterModule(platformSpecificModule);
       }
     }
+
+    #endregion
 
     #region Life Cycle
     protected override void OnStart()
