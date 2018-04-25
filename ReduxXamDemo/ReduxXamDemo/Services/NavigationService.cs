@@ -20,6 +20,7 @@ namespace ReduxXamDemo.Services
   {
     private NavigationPage navigationPage;
     private Dictionary<string, Type> pageMappings;
+    private bool navigating = false;
     private readonly Store<ApplicationState> store;
 
     public NavigationService(Store<ApplicationState> store)
@@ -94,6 +95,8 @@ namespace ReduxXamDemo.Services
 
       void ApplyDifference()
       {
+        navigating = true;
+
         //replace
         var lastDesiredIndex = desired.Count - 1;
         foreach (var indexToReplace in pagesToBeReplaced.Keys)
@@ -145,7 +148,7 @@ namespace ReduxXamDemo.Services
           }
         }
 
-
+        navigating = false;
       }
 
     }
@@ -157,8 +160,8 @@ namespace ReduxXamDemo.Services
       this.navigationPage = navigationPage;
 
       //check when event occurs
-      navigationPage.Popped += (s, e) => store.Dispatch(new PopAction());
-      navigationPage.PoppedToRoot += (s, e) => store.Dispatch(new PopToRootAction());
+      navigationPage.Popped += (s, e) => { if (!navigating) store.Dispatch(new PopAction()); };
+      navigationPage.PoppedToRoot += (s, e) => { if (!navigating) store.Dispatch(new PopToRootAction()); };
       //navigationPage.Pushed += (s, e) => store.Dispatch(TODO);
     }
 

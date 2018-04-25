@@ -14,7 +14,7 @@ namespace ReduxXamDemo.State.Reducers
     private static readonly CurrentOrderState initialValue = new CurrentOrderState(
       order: null,
       orderDetails: ImmutableList<OrderDetail>.Empty,
-      currentOrderDetailId: 0
+      currentOrderDetailIndex: null
   );
 
     public CurrentOrderState Reduce(CurrentOrderState state = null, object action = null)
@@ -28,7 +28,9 @@ namespace ReduxXamDemo.State.Reducers
       {
         case SetPizzaAction a:
           {
-            var prevOrderDetail = state.OrderDetails[state.CurrentOrderDetailId];
+            if (!state.CurrentOrderDetailIndex.HasValue) return state;
+
+            var prevOrderDetail = state.OrderDetails[state.CurrentOrderDetailIndex.Value];
 
             var newOrderDetail = prevOrderDetail
               .ToBuilder()
@@ -37,11 +39,13 @@ namespace ReduxXamDemo.State.Reducers
 
             var newOrderDetails = state.OrderDetails.Replace(prevOrderDetail, newOrderDetail);
 
-            return new CurrentOrderState(state.Order, newOrderDetails, state.CurrentOrderDetailId);
+            return new CurrentOrderState(state.Order, newOrderDetails, state.CurrentOrderDetailIndex);
           }
         case SetSizeAction a:
           {
-            var prevOrderDetail = state.OrderDetails[state.CurrentOrderDetailId];
+            if (!state.CurrentOrderDetailIndex.HasValue) return state;
+
+            var prevOrderDetail = state.OrderDetails[state.CurrentOrderDetailIndex.Value];
 
             var newOrderDetail = prevOrderDetail
               .ToBuilder()
@@ -50,11 +54,13 @@ namespace ReduxXamDemo.State.Reducers
 
             var newOrderDetails = state.OrderDetails.Replace(prevOrderDetail, newOrderDetail);
 
-            return new CurrentOrderState(state.Order, newOrderDetails, state.CurrentOrderDetailId);
+            return new CurrentOrderState(state.Order, newOrderDetails, state.CurrentOrderDetailIndex);
           }
         case SetToppingsAction a:
           {
-            var prevOrderDetail = state.OrderDetails[state.CurrentOrderDetailId];
+            if (!state.CurrentOrderDetailIndex.HasValue) return state;
+
+            var prevOrderDetail = state.OrderDetails[state.CurrentOrderDetailIndex.Value];
 
             var newOrderDetail = prevOrderDetail
               .ToBuilder()
@@ -63,11 +69,13 @@ namespace ReduxXamDemo.State.Reducers
 
             var newOrderDetails = state.OrderDetails.Replace(prevOrderDetail, newOrderDetail);
 
-            return new CurrentOrderState(state.Order, newOrderDetails, state.CurrentOrderDetailId);
+            return new CurrentOrderState(state.Order, newOrderDetails, state.CurrentOrderDetailIndex);
           }
         case AddToppingAction a:
           {
-            var prevOrderDetail = state.OrderDetails[state.CurrentOrderDetailId];
+            if (!state.CurrentOrderDetailIndex.HasValue) return state;
+
+            var prevOrderDetail = state.OrderDetails[state.CurrentOrderDetailIndex.Value];
 
             var newToppings = prevOrderDetail.ToppingIds.Add(a.ToppingId);
 
@@ -78,11 +86,13 @@ namespace ReduxXamDemo.State.Reducers
 
             var newOrderDetails = state.OrderDetails.Replace(prevOrderDetail, newOrderDetail);
 
-            return new CurrentOrderState(state.Order, newOrderDetails, state.CurrentOrderDetailId);
+            return new CurrentOrderState(state.Order, newOrderDetails, state.CurrentOrderDetailIndex);
           }
         case RemoveToppingAction a:
           {
-            var prevOrderDetail = state.OrderDetails[state.CurrentOrderDetailId];
+            if (!state.CurrentOrderDetailIndex.HasValue) return state;
+
+            var prevOrderDetail = state.OrderDetails[state.CurrentOrderDetailIndex.Value];
 
             if (prevOrderDetail.ToppingIds.Contains(a.ToppingId))
             {
@@ -95,7 +105,7 @@ namespace ReduxXamDemo.State.Reducers
 
               var newOrderDetails = state.OrderDetails.Replace(prevOrderDetail, newOrderDetail);
 
-              return new CurrentOrderState(state.Order, newOrderDetails, state.CurrentOrderDetailId);
+              return new CurrentOrderState(state.Order, newOrderDetails, state.CurrentOrderDetailIndex);
             }
             else
             {
@@ -105,15 +115,20 @@ namespace ReduxXamDemo.State.Reducers
         case CreateOrderAction a:
           {
             var order = new Order(0, null);
-            return new CurrentOrderState(order, ImmutableList<OrderDetail>.Empty, 0);
+            return new CurrentOrderState(order, ImmutableList<OrderDetail>.Empty, null);
           }
         case CreateOrderDetailAction a:
           {
             var orderDetail = new OrderDetail.Builder().WithOrderId(state.Order.Id).ToImmutable();
 
             var newOrderDetails = state.OrderDetails.Add(orderDetail);
+            var newIndex = newOrderDetails.IndexOf(orderDetail);
 
-            return new CurrentOrderState(state.Order, newOrderDetails, state.CurrentOrderDetailId);
+            return new CurrentOrderState(state.Order, newOrderDetails, newIndex);
+          }
+        case SetCurrentOrderDetailAction a:
+          {
+            return new CurrentOrderState(state.Order, state.OrderDetails, a.CurrentOrderDetailIndex);
           }
         case RemoveOrderDetailAction a:
           {
@@ -122,7 +137,22 @@ namespace ReduxXamDemo.State.Reducers
             {
               var newOrderDetails = state.OrderDetails.Remove(orderDetail);
 
-              return new CurrentOrderState(state.Order, newOrderDetails, state.CurrentOrderDetailId);
+              //update current index
+              var currentOrderDetailIndex = state.CurrentOrderDetailIndex;
+              if (state.CurrentOrderDetailIndex.HasValue)
+              {
+                if (state.CurrentOrderDetailIndex == a.Index)
+                {
+                  currentOrderDetailIndex = null;
+                }
+                else
+                {
+                  var currentOrderDetail = state.OrderDetails[state.CurrentOrderDetailIndex.Value];
+                  currentOrderDetailIndex = newOrderDetails.IndexOf(currentOrderDetail);
+                }
+              }
+
+              return new CurrentOrderState(state.Order, newOrderDetails, currentOrderDetailIndex);
             }
 
             return state; //return same object when nothing has changed
@@ -131,11 +161,12 @@ namespace ReduxXamDemo.State.Reducers
           {
             var newOrder = new Order(state.Order.Id, a.Comments);
 
-            return new CurrentOrderState(newOrder, state.OrderDetails, state.CurrentOrderDetailId);
+            return new CurrentOrderState(newOrder, state.OrderDetails, state.CurrentOrderDetailIndex);
           }
         default:
           return state;
       }
+
     }
   }
 }

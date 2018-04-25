@@ -30,7 +30,8 @@ namespace ReduxXamDemo.ViewModels
       var sizes = store.Grab(state => state.Data.Sizes);
 
       var selectedPizzaId = store.Grab(state => state.CurrentOrder)
-        .Select(co => co.OrderDetails[co.CurrentOrderDetailId].PizzaId).Where(pid => pid.HasValue);
+        .Where(co => co.CurrentOrderDetailIndex.HasValue)
+        .Select(co => co.OrderDetails[co.CurrentOrderDetailIndex.Value].PizzaId).Where(pid => pid.HasValue);
 
       var selectedPizza = pizzas.CombineLatest(selectedPizzaId, (p, id) => p[id.Value]);
 

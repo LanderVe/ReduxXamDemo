@@ -20,7 +20,7 @@ namespace ReduxXamDemo.ViewModels
 
     public IObservable<IEnumerable<OrderDetailViewModel>> OrderDetailsStream { get; }
     public IObservable<string> TotalPriceStream { get; }
-    public IObservable<bool> IsOrderReady { get; }
+    public IObservable<bool> CanOrder { get; }
     public Command NewOrderDetailCommand { get; }
     public Command OrderCommand { get; }
     public Command DeleteOrderDetailCommand { get; }
@@ -33,7 +33,7 @@ namespace ReduxXamDemo.ViewModels
       store.Dispatch(new CreateOrderAction());
 
       //bindable properties
-      IsOrderReady = store.Grab(state => !state.CurrentOrder.OrderDetails.IsEmpty);
+      CanOrder = store.Grab(state => !state.CurrentOrder.OrderDetails.IsEmpty);
 
       var orderDetails = store.Grab(state => state.CurrentOrder.OrderDetails);
       var pizzas = store.Grab(state => state.Data.Pizzas);
@@ -59,32 +59,21 @@ namespace ReduxXamDemo.ViewModels
       ImmutableSortedDictionary<int, State.Models.Size> sizes,
       ImmutableSortedDictionary<int, Topping> toppings)
     {
-      try
-      {
+      return orderDetails
+        .Where(od => od.PizzaId.HasValue && od.SizeId.HasValue)
+        .Select((od, index) =>
+        {
+          var pizza = pizzas[od.PizzaId.Value];
+          var size = sizes[od.SizeId.Value];
+          var selectedToppings = od.ToppingIds.Select(tid => toppings[tid]).ToList();
 
-
-        return orderDetails
-          .Where(od => od.PizzaId.HasValue && od.SizeId.HasValue)
-          .Select((od, index) =>
-          {
-            var pizza = pizzas[od.PizzaId.Value];
-            var size = sizes[od.SizeId.Value];
-            var selectedToppings = od.ToppingIds.Select(tid => toppings[tid]).ToList();
-
-            return MapToOrderDetailViewModel(od, pizza, size, selectedToppings, index);
-          }).ToList();
-      }
-      catch (Exception ex)
-      {
-
-        throw;
-      }
+          return MapToOrderDetailViewModel(od, pizza, size, selectedToppings, index);
+        }).ToList();
     }
 
     private OrderDetailViewModel MapToOrderDetailViewModel(OrderDetail orderDetail, Pizza pizza,
       State.Models.Size size, IEnumerable<Topping> toppings, int index)
     {
-      try { 
       var price = pizza.BasePrice * size.PriceMultiplier;
       foreach (var topping in toppings)
         price += topping.Price;
@@ -97,12 +86,6 @@ namespace ReduxXamDemo.ViewModels
         Index = index
       };
     }
-      catch (Exception ex)
-      {
-
-        throw;
-      }
-}
 
     public void GoToPizzaSelection()
     {
@@ -119,6 +102,7 @@ namespace ReduxXamDemo.ViewModels
 
     private void MakeOrder()
     {
+      //TODO
       Debug.WriteLine("Order!");
     }
 

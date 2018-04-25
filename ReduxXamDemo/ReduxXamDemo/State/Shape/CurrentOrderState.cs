@@ -11,15 +11,15 @@ namespace ReduxXamDemo.State.Shape
   /// </summary>
   public class CurrentOrderState
   {
-    public CurrentOrderState(Order order, ImmutableList<OrderDetail> orderDetails, int currentOrderDetailId)
+    public CurrentOrderState(Order order, ImmutableList<OrderDetail> orderDetails, int? currentOrderDetailIndex)
     {
       Order = order;
       OrderDetails = orderDetails;
-      CurrentOrderDetailId = currentOrderDetailId;
+      CurrentOrderDetailIndex = currentOrderDetailIndex;
     }
 
     public Order Order { get; }
     public ImmutableList<OrderDetail> OrderDetails { get; }
-    public int CurrentOrderDetailId { get; }
+    public int? CurrentOrderDetailIndex { get; }
   }
 }

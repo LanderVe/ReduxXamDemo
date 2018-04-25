@@ -10,6 +10,15 @@ namespace ReduxXamDemo.State.Actions
 
   class CreateOrderDetailAction { }
 
+  class SetCurrentOrderDetailAction {
+    public SetCurrentOrderDetailAction(int? currentOrderDetailIndex)
+    {
+      CurrentOrderDetailIndex = currentOrderDetailIndex;
+    }
+
+    public int? CurrentOrderDetailIndex { get; }
+  }
+
   class RemoveOrderDetailAction
   {
     public RemoveOrderDetailAction(int index)

@@ -30,7 +30,8 @@ namespace ReduxXamDemo.ViewModels
         .Select(ts => ts.Values.OrderBy(t => t.Name));
 
       var selectedToppings = store.Grab(state => state.CurrentOrder)
-        .Select(co => co.OrderDetails[co.CurrentOrderDetailId].ToppingIds);
+        .Where(co => co.CurrentOrderDetailIndex.HasValue)
+        .Select(co => co.OrderDetails[co.CurrentOrderDetailIndex.Value].ToppingIds);
 
       ToppingsStream = toppings
         .CombineLatest(selectedToppings, MapToppingsToViewModels)

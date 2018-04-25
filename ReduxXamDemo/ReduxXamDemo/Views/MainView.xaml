@@ -38,7 +38,7 @@
       </ListView.ItemTemplate>
       <ListView.Footer>
 
-        <StackLayout IsVisible="{o:Bind IsOrderReady}">
+        <StackLayout IsVisible="{o:Bind CanOrder}">
           <Label Text="{o:Bind TotalPriceStream}" HorizontalOptions="End" Margin="0,0,20,0"/>
           <Button Text="Order" 
                   VerticalOptions="Center" 
