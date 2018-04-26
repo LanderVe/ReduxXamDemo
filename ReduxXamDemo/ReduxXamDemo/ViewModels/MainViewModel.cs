@@ -11,29 +11,35 @@ using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using ReduxXamDemo.Services;
+using ReduxXamDemo.Utils;
 
 namespace ReduxXamDemo.ViewModels
 {
   public class MainViewModel : ViewModelBase
   {
     private readonly Store<ApplicationState> store;
+    private readonly IRESTService restService;
 
     public IObservable<IEnumerable<OrderDetailViewModel>> OrderDetailsStream { get; }
     public IObservable<string> TotalPriceStream { get; }
     public IObservable<bool> CanOrder { get; }
+    public IObservable<bool> IsBusy { get; }
     public Command NewOrderDetailCommand { get; }
-    public Command OrderCommand { get; }
+    public SubjectCommand OrderCommand { get; }
     public Command DeleteOrderDetailCommand { get; }
 
-    public MainViewModel(Store<ApplicationState> store)
+    public MainViewModel(Store<ApplicationState> store, IRESTService restService)
     {
       this.store = store;
+      this.restService = restService;
 
       //create new Order
       store.Dispatch(new CreateOrderAction());
 
       //bindable properties
       CanOrder = store.Grab(state => !state.CurrentOrder.OrderDetails.IsEmpty);
+      IsBusy = store.Grab(state => state.UI.ShowSpinner);
 
       var orderDetails = store.Grab(state => state.CurrentOrder.OrderDetails);
       var pizzas = store.Grab(state => state.Data.Pizzas);
@@ -51,7 +57,11 @@ namespace ReduxXamDemo.ViewModels
       //Commands
       NewOrderDetailCommand = new Command(GoToPizzaSelection);
       DeleteOrderDetailCommand = new Command<OrderDetailViewModel>(OnDeleteOrderDetail);
-      OrderCommand = new Command(MakeOrder);
+      //OrderCommand = new Command(MakeOrder);
+      OrderCommand = new SubjectCommand();
+
+      var currentOrder = store.Grab(state => state.CurrentOrder);
+      OrderCommand.Subject.WithLatestFrom(currentOrder, async (_, orderstate) => await MakeOrder(orderstate)).Subscribe();
     }
 
     private List<OrderDetailViewModel> MapToOrderDetailViewModels(ImmutableList<OrderDetail> orderDetails,
@@ -100,10 +110,21 @@ namespace ReduxXamDemo.ViewModels
       store.Dispatch(new RemoveOrderDetailAction(vm.Index));
     }
 
-    private void MakeOrder()
+
+
+    private async Task MakeOrder(CurrentOrderState currentOrderState)
     {
-      //TODO
-      Debug.WriteLine("Order!");
+      store.Dispatch(new StartOrderAction());
+      try
+      {
+        var (order, orderDetails) = await restService.OrderAsync(currentOrderState.Order, currentOrderState.OrderDetails);
+        store.Dispatch(new OrderSuccessAction(order, orderDetails));
+        store.Dispatch(new CreateOrderAction());
+      }
+      catch (Exception ex)
+      {
+        store.Dispatch(new OrderFailAction());
+      }
     }
 
 

@@ -48,20 +48,13 @@ namespace ReduxXamDemo.State.Reducers
 
       switch (action)
       {
-        case SaveOrderAction a: //sync save, maybe replace this with a webservice call
+        case OrderSuccessAction a: //sync save
           {
             // store order
-            var orderId = state.Orders.Keys.Max() + 1;
-            var newOrder = new Order(orderId, a.CurrentOrder.Order.Comments);
-            var newOrders = state.Orders.Add(orderId, newOrder);
+            var newOrders = state.Orders.Add(a.Order.Id, a.Order);
 
             // store orderdetails
-            var orderDetailId = state.OrderDetails.Keys.Max();
-
-            var addedOrderDetails = a.CurrentOrder.OrderDetails
-              .Select(orderDetail => orderDetail.ToBuilder().WithId(++orderDetailId).WithOrderId(orderId).ToImmutable())
-              .ToDictionary(od => od.Id);
-
+            var addedOrderDetails = a.OrderDetails.ToDictionary(od => od.Id);
             var newOrderDetails = state.OrderDetails.AddRange(addedOrderDetails); //more efficient than adding one by one
 
             return state.ToBuilder().WithOrders(newOrders).WithOrderDetails(newOrderDetails).ToImmutable();

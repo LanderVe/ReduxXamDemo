@@ -29,7 +29,7 @@ namespace ReduxXamDemo.Services
 
       ConfigurePageMappings();
 
-      store.Grab(state => state?.Router).Subscribe(OnNewRouterState);
+      store.Grab(state => state?.Router).Subscribe(async routerState => await OnNewRouterStateAsync(routerState));
     }
 
     private void ConfigurePageMappings()
@@ -41,7 +41,7 @@ namespace ReduxXamDemo.Services
       pageMappings = q.ToDictionary(pageType => pageType.BaseType.GenericTypeArguments[0].Name);
     }
 
-    private void OnNewRouterState(RouterState routerState)
+    private async Task OnNewRouterStateAsync(RouterState routerState)
     {
       if (navigationPage == null) return;
 
@@ -59,7 +59,7 @@ namespace ReduxXamDemo.Services
       var pagesToBeReplaced = new Dictionary<int, Type>(); //by index
 
       FindDifference();
-      ApplyDifference();
+      await ApplyDifferenceAsync();
 
       void FindDifference()
       {
@@ -93,7 +93,7 @@ namespace ReduxXamDemo.Services
 
       }
 
-      void ApplyDifference()
+      async Task ApplyDifferenceAsync()
       {
         navigating = true;
 
@@ -128,7 +128,7 @@ namespace ReduxXamDemo.Services
             navigationPage.Navigation.RemovePage(pageToRemove);
           }
           //pop last
-          navigationPage.Navigation.PopAsync();
+          await navigationPage.Navigation.PopAsync();
         }
 
         //add
@@ -137,7 +137,7 @@ namespace ReduxXamDemo.Services
         {
           var lastTypeToAdd = pagesToBeAdded[pagesToBeAdded.Count - 1];
           var lastPageToAdd = (Page)Activator.CreateInstance(lastTypeToAdd);
-          navigationPage.Navigation.PushAsync(lastPageToAdd);
+          await navigationPage.Navigation.PushAsync(lastPageToAdd);
 
           //insert before
           for (int i = 0; i < pagesToBeAdded.Count - 1; i++)

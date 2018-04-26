@@ -89,5 +89,16 @@ namespace ReduxXamDemo.State.Actions
     public string Comments { get; }
   }
 
+  class StartOrderAction { }
+  class OrderSuccessAction {
+    public OrderSuccessAction(Order order, ImmutableList<OrderDetail> orderDetails)
+    {
+      Order = order;
+      OrderDetails = orderDetails;
+    }
 
+    public Order Order { get; }
+    public ImmutableList<OrderDetail> OrderDetails { get; }
+  }
+  class OrderFailAction { }
 }

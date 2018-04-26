@@ -23,11 +23,13 @@ namespace ReduxXamDemo.Views
     protected override void OnAppearing()
     {
       ViewModel.OnLoaded();
+      BindingContext = ViewModel;
     }
 
     protected override void OnDisappearing()
     {
       ViewModel.OnUnloaded();
+      BindingContext = null;
     }
 
   }

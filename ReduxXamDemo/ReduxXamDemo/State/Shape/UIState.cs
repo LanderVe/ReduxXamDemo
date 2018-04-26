@@ -8,12 +8,14 @@ namespace ReduxXamDemo.State.Shape
 {
   public class UIState
   {
-    public UIState(ImmutableList<Toast> toasts)
+    public UIState(ImmutableList<Toast> toasts, bool showSpinner)
     {
       Toasts = toasts;
+      ShowSpinner = showSpinner;
     }
 
     public ImmutableList<Toast> Toasts { get; }
+    public bool ShowSpinner { get; }
   }
 
   ///// <summary>

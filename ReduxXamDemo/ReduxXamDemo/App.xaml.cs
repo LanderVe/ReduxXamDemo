@@ -101,6 +101,9 @@ namespace ReduxXamDemo
       navigationService = new NavigationService(store);
       builder.RegisterInstance(navigationService).As<INavigationService>();
 
+      //other services
+      builder.RegisterType<RESTService>().As<IRESTService>().SingleInstance();
+
       Container = builder.Build();
     }
 

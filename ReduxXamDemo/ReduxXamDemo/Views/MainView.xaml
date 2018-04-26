@@ -9,47 +9,49 @@
             x:Name="mainView"
             Title="Orders">
 
-  <StackLayout>
+  <AbsoluteLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+    <StackLayout AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1">
 
-    <Button Text="Add Pizza" 
+      <Button Text="Add Pizza" 
            VerticalOptions="Center" 
            HorizontalOptions="Center" 
            Command="{Binding NewOrderDetailCommand}" />
 
-    <ListView ItemsSource="{o:Bind OrderDetailsStream, Mode=OneWay}">
-      <ListView.ItemTemplate>
-        <DataTemplate>
-          <!--<TextCell Text="{Binding Description}" 
+      <ListView ItemsSource="{o:Bind OrderDetailsStream, Mode=OneWay}">
+        <ListView.ItemTemplate>
+          <DataTemplate>
+            <TextCell Text="{Binding Description}" 
                     Detail="{Binding Price, StringFormat='{0:C}'}">
-            <TextCell.ContextActions>
-              <MenuItem Text="Delete" Command="{Binding BindingContext.DeleteOrderDetailCommand, Source={x:Reference mainView}}" CommandParameter="{Binding}"></MenuItem>
-            </TextCell.ContextActions>
-          </TextCell>-->
-          <ViewCell>
-            <ViewCell.View>
-              <StackLayout Orientation="Horizontal">
-                <Label Text="{Binding Description}"/>
-                <Label Text="{Binding Price, StringFormat='{0:C}'}"/>
-                <Button Text="Del" Command="{Binding BindingContext.DeleteOrderDetailCommand, Source={x:Reference mainView}}" CommandParameter="{Binding}"/>
-              </StackLayout>
-            </ViewCell.View>
-          </ViewCell>
-        </DataTemplate>
-      </ListView.ItemTemplate>
-      <ListView.Footer>
+              <TextCell.ContextActions>
+                <MenuItem Text="Delete" Command="{Binding BindingContext.DeleteOrderDetailCommand, Source={x:Reference mainView}}" CommandParameter="{Binding}"></MenuItem>
+              </TextCell.ContextActions>
+            </TextCell>
+          </DataTemplate>
+        </ListView.ItemTemplate>
+        <ListView.Footer>
 
-        <StackLayout IsVisible="{o:Bind CanOrder}">
-          <Label Text="{o:Bind TotalPriceStream}" HorizontalOptions="End" Margin="0,0,20,0"/>
-          <Button Text="Order" 
+          <StackLayout IsVisible="{o:Bind CanOrder}">
+            <Label Text="{o:Bind TotalPriceStream}" HorizontalOptions="End" Margin="0,0,20,0"/>
+            <Button Text="Order" 
                   VerticalOptions="Center" 
                   HorizontalOptions="Center" 
                   Command="{Binding OrderCommand}" />
-        </StackLayout>
-        
-      </ListView.Footer>
-    </ListView>
+          </StackLayout>
 
+        </ListView.Footer>
+      </ListView>
 
+    </StackLayout>
 
-  </StackLayout>
+    <!-- semi-transparent background -->
+    <ContentView AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1" 
+                 BackgroundColor="#CCFFFFFF"
+                 IsVisible="{o:Bind IsBusy}"/>
+
+    <ActivityIndicator AbsoluteLayout.LayoutFlags="PositionProportional" AbsoluteLayout.LayoutBounds="0.5,0.25,-1,-1"
+                       IsRunning="{o:Bind IsBusy}" 
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center"/>
+  </AbsoluteLayout>
+
 </v:ViewPage>

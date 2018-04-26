@@ -21,14 +21,7 @@ namespace ReduxXamDemo.State.Models
     public int OrderId { get; }
     public int? PizzaId { get; }
     public int? SizeId { get; }
-    public ImmutableList<int> ToppingIds { get; } //Replace with many-to-many?
-
-    //public decimal GetDetailPrice() TODO into selector?
-    //{
-    //  if (Pizza == null || Size == null) return 0M;
-
-    //  return Pizza.BasePrice * Size.PriceMultiplier + Toppings.Sum(t => t.Price);
-    //}
+    public ImmutableList<int> ToppingIds { get; } 
 
     public Builder ToBuilder() => new Builder(Id, OrderId, PizzaId, SizeId, ToppingIds);
 
@@ -64,7 +57,7 @@ namespace ReduxXamDemo.State.Models
 
       public Builder WithId(int id)
       {
-        Id = Id;
+        Id = id;
         return this;
       }
 

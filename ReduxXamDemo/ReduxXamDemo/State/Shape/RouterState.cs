@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Text;
 
 namespace ReduxXamDemo.State.Shape
@@ -15,6 +16,7 @@ namespace ReduxXamDemo.State.Shape
     public ImmutableList<RouterStackElement> Stack { get; }
   }
 
+  [DebuggerDisplay("RouterStackElement {ViewModelName}")]
   public class RouterStackElement
   {
     public RouterStackElement(string viewModelName)
